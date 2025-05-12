@@ -10,13 +10,18 @@ import OpenAI
 import SwiftUI
 
 public enum ConfigurationKeyName {
-  static let url = "OACUI_CL_URL"
-  static let model = "OACUI_CL_Model"
-  static let token = "OACUI_CL_API_Token"
-  static let organizationIdentifier = "OACUI_CL_API_Organization_Identifier"
+  public static let url = "OACUI_CL_URL"
+  public static let model = "OACUI_CL_Model"
+  public static let token = "OACUI_CL_API_Token"
+  public static let organizationIdentifier = "OACUI_CL_API_Organization_Identifier"
+  
+  public static func value(for key: String) -> String? {
+    let keychain = KeychainSwift()
+    return keychain.get(key)
+  }
 }
 
-class OpenAIConfigurationUIViewModel: ObservableObject {
+public class OpenAIConfigurationUIViewModel: ObservableObject {
   // Variables for text fields
   @Published var url: String = "https://api.openai.com/v1"
   @Published var model: String = "Select model"
@@ -32,7 +37,7 @@ class OpenAIConfigurationUIViewModel: ObservableObject {
   // State variable to store available models (for combo box)
   @Published var availableModels: [String] = ["Select model"]
   
-  init() {
+  public init() {
     restoreValuesFromKeyChain()
     isValidUrl = URL(string: self.url) != nil
     isConnectionSuccessful = isValidUrl
